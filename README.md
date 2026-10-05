@@ -1,4 +1,4 @@
-# Dreamer-V3 (Re-implementation in PyTorch🔥 / PyTorch-Lightning⚡)
+# Dreamer-V3 (Re-implementation in PyTorch🔥 / Lightning⚡)
 
 A clean re-implementation of the model-based reinforcement learning algorithm [Dreamer-V3](https://arxiv.org/abs/2301.04104) by Hafner et al. in PyTorch & Lightning (for eductional purposes).
 
@@ -12,13 +12,13 @@ A clean re-implementation of the model-based reinforcement learning algorithm [D
 
 - 1D & 2D Observations
 
-- Continuous Action Spaces (Discrete is TODO⚠️)
+- Continuous & Discrete Action Spaces
 
-- Custom Concurrent data collection (i.e., multiple environments & decoupled from algorithm updates)
+- Custom Concurrent Data Collection (i.e., multiple environments & decoupled from algorithm updates)
 
 - Custom TorchRL ReplayBuffer storage for compressed experiences for efficient data collection.
 
-- torch.compile support
+- BF16 Mixed-precision training & torch.compile support
 
 - Extensive logging to TensorBoard (e.g., in-depth statistic, replay videos)
 
