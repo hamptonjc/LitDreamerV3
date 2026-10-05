@@ -7,7 +7,6 @@ import numpy as np
 from tensordict import TensorDict
 from distributions import *
 from utils import Config, Utils, UniformMix
-from line_profiler import profile
 
 
 #####################################################################
@@ -325,7 +324,6 @@ class WorldModel(nn.Module):
             decoded[name] = type(d)(mode=d.mode.unflatten(0, (b,t)), dims=len(d._dims), agg=d._agg)
         return TensorDict(decoded, [b,t])
 
-    @profile
     def forward(self, obs: TensorDict, actions: Tensor, continues: Tensor) -> tuple[Tensor, Distribution]:
         # Get initial recurrent state
         h_t = self._get_inital_recurrent_state(actions.size(0))
