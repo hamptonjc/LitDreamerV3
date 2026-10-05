@@ -1,15 +1,10 @@
 # Imports
-import os
 import copy
 import argparse
 import random
 import numpy as np
 import torch
 import pytorch_lightning as ptl
-from pytorch_lightning.loggers import CSVLogger
-from ray.train.lightning import prepare_trainer
-from ray.train.torch import TorchTrainer
-from ray import tune
 from data import DataModule
 from training import LitModule
 from utils import Config
@@ -30,9 +25,7 @@ class Runner:
             name, & version to override logger settings.
     """
     def __init__(self, global_cfg: Config,
-                 _using_ray: bool=False,
                  _override_exp_dir: Config=None) -> None:
-        self._using_ray = _using_ray
         self.global_cfg = global_cfg
         self.cfg = global_cfg.runner
         self.lm_cfg = global_cfg.lit_module
@@ -80,18 +73,10 @@ class Runner:
     def _setup_ptl_trainer(self) -> None:
         self._prep_loggers()
         self.cfg.ptl_trainer_args.load_all_instances()
-        if self._using_ray:
-            self._ptl_trainer = ptl.Trainer(
-                    num_sanity_val_steps=0,
-                    enable_progress_bar=False,
-                    enable_checkpointing=False,
-                    **self.cfg.ptl_trainer_args.to_dict())
-            self._ptl_trainer = prepare_trainer(self._ptl_trainer)
-        else:
-            self._ptl_trainer = ptl.Trainer(
-                    num_sanity_val_steps=0,
-                    enable_progress_bar=False,
-                    **self.cfg.ptl_trainer_args.to_dict())
+        self._ptl_trainer = ptl.Trainer(
+                num_sanity_val_steps=0,
+                enable_progress_bar=False,
+                **self.cfg.ptl_trainer_args.to_dict())
     
     def _prep_loggers(self) -> None:
         if self.cfg.ptl_trainer_args.has('logger'):
@@ -117,77 +102,6 @@ class Runner:
             self._log_dir = Config(save_dir=l.save_dir, name=l.name, version=(
                 f'version_{l.version}' if isinstance(l.version, int) else l.version))
 
-class RayRunner:
-    """
-    A wrapper around Runner to leverage the Ray API (e.g. Tune, TorchTrainer).
-    Args:
-        global_cfg: A config with all sub-modules configs
-            (runner, lit_module, data_module)
-    """
-    def __init__(self, global_cfg: Config) -> None:
-        self._tuning = False
-        if global_cfg.runner.has('ray_tuner_args'):
-            self._tuning = True
-        self.cfg = copy.deepcopy(global_cfg.runner)
-        self.global_cfg = global_cfg
-        self._setup()
-
-    def execute(self, routine: str) -> None:
-        if routine != 'train':
-            raise NotImplementedError(routine)
-        if self._tuning:
-            self._tuner.fit()
-        else:
-            self._ray_trainer.fit()
-
-    def _setup(self) -> None:
-        os.environ['TUNE_DISABLE_AUTO_CALLBACK_LOGGERS'] = '1'
-        self._prepare_global_cfg()
-        self._setup_ray_trainer()
-        if self._tuning:
-            self._setup_tuner()
-
-    def _setup_tuner(self) -> None:
-        self.cfg.ray_tuner_args.load_all_instances()
-        self._tuner = tune.Tuner(
-            self._ray_trainer, param_space={
-                "train_loop_config": self.global_cfg.to_dict_recursive()},
-            **self.cfg.ray_tuner_args.to_dict())
-
-    def _setup_ray_trainer(self) -> None:
-        self.cfg.ray_trainer_args.load_all_instances()
-        self._ray_trainer = TorchTrainer(
-            self._train_fn,
-            train_loop_config=self.global_cfg,
-            **self.cfg.ray_trainer_args.to_dict())
-
-    def _prepare_global_cfg(self) -> None:
-        def search(cfg):
-            if isinstance(cfg, Config):
-                cfg = cfg.to_dict()
-            for k,v in cfg.items():
-                if isinstance(v, Config):
-                    search(v)
-                elif isinstance(v, list):
-                    for i in range(len(v)):
-                        if isinstance(v[i], Config):
-                            search(v[i])
-                        elif isinstance(v[i], str) and v[i].startswith('tune.'):
-                                assert self._tuning, (
-                                    'tuning requires ray_tuner_args to be defined!')
-                                v[i] = eval(v[i])
-                elif isinstance(v, str) and v.startswith('tune.'):
-                    assert self._tuning, (
-                        'tuning requires ray_tuner_args to be defined!')
-                    cfg[k] = eval(v)
-        search(self.global_cfg)
-
-    def _train_fn(self, cfg: Config|dict) -> None:
-        if isinstance(cfg, dict):
-            cfg = Config(**cfg)
-        runner = Runner(cfg, _using_ray=True)
-        runner.execute()
-
 def main() -> None:
     # CLI
     parser = argparse.ArgumentParser(description='Run training, etc.')
@@ -203,13 +117,7 @@ def main() -> None:
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
-    if (cfg.runner.has('type') and cfg.runner.type == 'ray'):
-        assert cfg.runner.has('ray_trainer_args'), (
-            'ray_trainer_args must be defined in config '
-            'to user runner type == \'ray\'')
-        runner = RayRunner(cfg)
-    else:
-        runner = Runner(cfg)
+    runner = Runner(cfg)
     runner.execute(args.routine)
 
 

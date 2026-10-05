@@ -122,9 +122,8 @@ runner:
   ptl_trainer_args:
     max_steps: 1.0e+8
     max_epochs: null
-    precision: 16-mixed
     log_every_n_steps: 100
-    benchmark: true
+    devices: 1
     # Callbacks to use during training. (https://lightning.ai/docs/pytorch/stable/api_references.html#callbacks)
     callbacks: [pytorch_lightning.callbacks.ModelCheckpoint: {save_top_k: 3, filename: '{step}-{hp_metric}', monitor: environment/return,
                                                               mode: max, every_n_train_steps: 100, save_last: true}]

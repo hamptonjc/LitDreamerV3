@@ -80,6 +80,7 @@ lit_module:
       action_entropy_weight: 3.0e-4
       # The number of steps to "dream" for
       dream_horizon: 15
+      # True if the environment has a continuous action space
       continuous_action_space: True
 
 # Data Module Settings

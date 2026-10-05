@@ -108,7 +108,6 @@ class LitModule(ptl.LightningModule):
                     self.trainer.datamodule.data_collector.evaluate_agent(self.cfg.eval_n_episodes)
         # TODO: implement evaluation for ConcurrentDataCollector
 
-    #@profile
     def training_step(self, batch: TensorDict, batch_idx: int) -> dict[str, Tensor]:
         # (0) Prepare for Step
         observations, actions, continues = (
@@ -220,7 +219,7 @@ class LitModule(ptl.LightningModule):
         # Calculate the advantage
         advantage = lambda_returns - baseline
         # Get objective
-        if self.cfg.optimization.behavior.continuous_actions:
+        if self.cfg.optimization.behavior.continuous_action_space:
             # Continuous action space
             objective = advantage
         else:
@@ -324,7 +323,7 @@ class LitModule(ptl.LightningModule):
                 env_return = trainer.callback_metrics['environment/return'].item()
             else:
                 env_return = -math.inf
-            print(f"👻 > Gradient-Step: {pl_module.global_step} || "
+            print(f"LitDreamerV3⚡ > Gradient-Step: {pl_module.global_step} || "
                   f"Environment-Step: {trainer.datamodule.data_collector.total_steps} || "
                   f"Environment-Return: {env_return:.3f}", end='\r')
     

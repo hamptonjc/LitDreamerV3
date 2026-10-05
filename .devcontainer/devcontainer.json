@@ -11,7 +11,7 @@
 		"HOST_USERNAME": "${localEnv:USER}"
 	},
 	"hostRequirements": {
-		"gpu": "optional"
+		"gpu": true
 	},
 	"runArgs": [
 		"--ipc",
@@ -20,7 +20,8 @@
 		"LitDreamerV3",
 		"--network",
 		"host",
-		"--privileged"
+		"--privileged",
+		"--gpus", "all"
 	],
 	"customizations": {
 		"vscode": {
