@@ -1,0 +1,8 @@
+__pycache__/
+experiments/
+*.png
+*.mp4
+*.gif
+*.txt
+.vscode/
+!environment/requirements.txt

@@ -1,0 +1,35 @@
+{
+	"name": "LitDreamerV3",
+	"remoteUser": "docker-user",
+	"build": {
+		"dockerfile": "${localWorkspaceFolder}/.docker/Dockerfile",
+		"context": "${localWorkspaceFolder}/.docker"
+	},
+	"containerEnv": {
+		"HOST_UID": "${localEnv:UID}",
+		"HOST_GID": "${localEnv:GID}",
+		"HOST_USERNAME": "${localEnv:USER}"
+	},
+	"hostRequirements": {
+		"gpu": "optional"
+	},
+	"runArgs": [
+		"--ipc",
+		"host",
+		"--name",
+		"LitDreamerV3",
+		"--network",
+		"host",
+		"--privileged"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter"
+			]
+		}
+	},
+	"workspaceMount": "source=${localWorkspaceFolder},target=/LitDreamerV3,type=bind",
+	"workspaceFolder": "/LitDreamerV3"
+}
