@@ -1,4 +1,4 @@
-# Dreamer-V3 (Re-implementation in PyTorch🔥 / Lightning⚡)
+# LitDreamerV3⚡
 
 A clean re-implementation of the model-based reinforcement learning algorithm [Dreamer-V3](https://arxiv.org/abs/2301.04104) by Hafner et al. in PyTorch & Lightning (for eductional purposes).
 
