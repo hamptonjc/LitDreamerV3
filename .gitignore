@@ -6,3 +6,4 @@ experiments/
 *.txt
 .vscode/
 !.docker/requirements.txt
+!assets/*

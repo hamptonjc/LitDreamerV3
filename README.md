@@ -2,6 +2,10 @@
 
 A clean re-implementation of the model-based reinforcement learning algorithm [Dreamer-V3](https://arxiv.org/abs/2301.04104) by Hafner et al. in PyTorch & Lightning (for eductional purposes).
 
+
+<video src="./assets/carracing.mp4" controls="controls" style="max-width: 100%;">
+</video>
+
 ## Usage
 
 1. Setup a config YAML file for the training run. See the ```configurations/``` sub-directory for examples & starting points.
