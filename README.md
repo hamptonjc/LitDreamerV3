@@ -2,7 +2,9 @@
 
 A clean re-implementation of the model-based reinforcement learning algorithm [Dreamer-V3](https://arxiv.org/abs/2301.04104) by Hafner et al. in PyTorch & Lightning (for eductional purposes).
 
-https://github.com/user-attachments/assets/cfa8c76b-c648-42ff-9eaf-5de4c913b961
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/cfa8c76b-c648-42ff-9eaf-5de4c913b961" width="700" controls></video>
+</p>
 
 ## Usage
 
