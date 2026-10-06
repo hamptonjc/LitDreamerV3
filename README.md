@@ -3,7 +3,7 @@
 A clean re-implementation of the model-based reinforcement learning algorithm [Dreamer-V3](https://arxiv.org/abs/2301.04104) by Hafner et al. in PyTorch & Lightning (for eductional purposes).
 
 
-<video src="./assets/carracing.mp4" controls="controls" style="max-width: 100%;"> lol
+<video src="assets/carracing.mp4" controls="controls" style="max-width: 100%;"> lol
 </video>
 
 ## Usage
